@@ -1,0 +1,62 @@
+import schemdraw
+import schemdraw.elements as elm
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Valores do filtro
+R_value = 1e3   # 1 kΩ
+C_value = 1e-6  # 1 μF
+
+# Frequência de corte
+f_c = 1 / (2 * np.pi * R_value * C_value)  # Hz
+w_c = 2 * np.pi * f_c                        # rad/s
+
+# Desenho do circuito RC Passa-Baixa
+d = schemdraw.Drawing()
+d += elm.Label().label("Filtro Passa-Baixa RC", fontsize=16, loc='top').at((3,4))
+d += elm.SourceV().up().label('Vin', loc='left')
+d += elm.Dot()
+d += elm.Resistor().right().label(f'R = {R_value/1e3:.1f}kΩ', loc='top')
+d += elm.Dot()
+d += elm.Line().right().length(d.unit*2)
+d += elm.Dot().label('+', loc='bottom')
+d += elm.Line().left().length(d.unit*2)
+d += elm.Capacitor().down().label(f'C = {C_value*1e6:.1f}µF', loc='bottom')
+d += elm.Ground()
+d += elm.Line().right().length(d.unit*2)
+d += elm.Dot().label('Vout\n\n\n-', loc='top')
+d.draw()
+
+# Simulação da resposta em frequência
+f = np.logspace(1, 5, 1000)   # Hz
+w = 2 * np.pi * f             # rad/s
+
+# Módulo linear
+mag_linear = 1 / np.sqrt(1 + (w*R_value*C_value)**2)
+
+# Fase em graus
+phase = -np.arctan(w*R_value*C_value) * (180/np.pi)
+
+# Plot dos gráficos de módulo e fase
+plt.figure(figsize=(8,6))
+
+# Módulo |H(jω)|
+plt.subplot(2,1,1)
+plt.semilogx(w, mag_linear, label='|H(jω)|')
+plt.axvline(w_c, color='r', linestyle='--', label=f'Frequência de corte = {w_c:.1f} rad/s')
+plt.title("Resposta em Frequência - Filtro Passa-Baixa RC")
+plt.ylabel("|H(jω)|")
+plt.grid(True, which="both", ls="--")
+plt.legend()
+
+# Fase ∠H(jω)
+plt.subplot(2,1,2)
+plt.semilogx(w, phase, label='Fase H(jω)')
+plt.axvline(w_c, color='r', linestyle='--', label=f'Frequência de corte = {w_c:.1f} rad/s')
+plt.xlabel("Frequência Angular ω [rad/s]")
+plt.ylabel("Fase [graus]")
+plt.grid(True, which="both", ls="--")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
