@@ -68,7 +68,7 @@ plt.axvline(wc1, color='r', linestyle='--', label=f'ωc1 = {wc1:.1f} rad/s')
 plt.axvline(wc2, color='r', linestyle='--', label=f'ωc2 = {wc2:.1f} rad/s')
 plt.axvline(w0, color='g', linestyle='--', label=f'ω0 = {w0:.1f} rad/s')
 plt.xlabel("Frequência Angular ω [rad/s]")
-plt.ylabel("Fase [graus]")
+plt.ylabel("∠H(jω)")
 plt.grid(True, which="both", ls="--")
 plt.legend()
 

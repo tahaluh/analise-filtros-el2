@@ -55,7 +55,7 @@ plt.subplot(2,1,2)
 plt.semilogx(w, phase, label='Fase H(jω)')
 plt.axvline(w_c, color='r', linestyle='--', label=f'Frequência de corte = {w_c:.1f} rad/s')
 plt.xlabel("Frequência Angular ω [rad/s]")
-plt.ylabel("Fase [graus]")
+plt.ylabel("∠H(jω)")
 plt.grid(True, which="both", ls="--")
 plt.legend()
 
