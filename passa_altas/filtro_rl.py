@@ -22,9 +22,10 @@ d += elm.Line().right().length(d.unit*1.5)
 d += elm.Dot().label('+', loc='bottom')
 d += elm.Line().left().length(d.unit*1.5)
 d += elm.Inductor().down().label(f'L = {L_value:.1f}H', loc='bottom')
-d += elm.Ground()
+d += elm.Dot()
 d += elm.Line().right().length(d.unit*1.5)
 d += elm.Dot().label('Vout\n\n\n-', loc='top')
+d += elm.Line().left().length(d.unit*2.5)
 d.draw()
 
 # Simulação da resposta em frequência
