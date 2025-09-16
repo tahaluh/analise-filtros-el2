@@ -4,8 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Valores do filtro RL
-R_value = 1e3   # 1 kΩ
-L_value = 0.159 # 0.159 H
+# Objetivo: Subwoofer passa-baixas com frequência de corte em 100 Hz
+R_value = 4       # 4 Ω
+L_value = 6.37e-3 # 6.37 mH
 
 # Frequência de corte
 f_c = R_value / (2 * np.pi * L_value)  # Hz
@@ -16,12 +17,12 @@ d = schemdraw.Drawing()
 d += elm.Label().label("Filtro Passa-Baixa RL", fontsize=16, loc='top').at((2,4))
 d += elm.SourceV().up().label('Vin', loc='left')
 d += elm.Dot()
-d += elm.Inductor().right().label(f'L = {L_value:.3f} H', loc='top')
+d += elm.Inductor().right().label(f'L = {L_value*1e3:.3f} mH', loc='top')
 d += elm.Dot()
 d += elm.Line().right().length(d.unit*1.5)
 d += elm.Dot().label('+', loc='bottom')
 d += elm.Line().left().length(d.unit*1.5)
-d += elm.Resistor().down().label(f'R = {R_value/1e3:.1f} kΩ', loc='bottom')
+d += elm.Resistor().down().label(f'R = {R_value:.1f} Ω', loc='bottom')
 d += elm.Dot()
 d += elm.Line().right().length(d.unit*1.5)
 d += elm.Dot().label('Vout\n\n\n-', loc='top')
