@@ -2,14 +2,11 @@ import schemdraw
 import schemdraw.elements as elm
 import numpy as np
 import matplotlib.pyplot as plt
-# Mais largo (mais banda rejeitada)
 
-# Mais largo (mais banda rejeitada)
-R_value = 2e3        # 2 kΩ
-L_value = 470e-3     # 470 mH
-C_value = 15e-6      # 15 µF
-# BW ≈ R/(2πL) ≈ 677 Hz
-
+# Valores do filtro
+R_value = 1e3      # 1 kΩ
+L_value = 470e-3   # 470 mH
+C_value = 15e-6    # 15 µF
 
 # Frequências de corte (rad/s)
 wc1 = -R_value/(2*L_value) + np.sqrt((R_value/(2*L_value))**2 + 1/(L_value*C_value))
@@ -25,7 +22,7 @@ print(f"fc1 = {fc1:.2f} Hz, fc2 = {fc2:.2f} Hz, f0 = {f0:.2f} Hz")
 
 # Desenho do circuito RLC série Rejeita-Banda
 d = schemdraw.Drawing()
-d += elm.Label().label("Filtro Rejeita-Banda RLC Série (3ª Variação)", fontsize=16, loc='top').at((2,7))
+d += elm.Label().label("Filtro Rejeita-Banda RLC Série (Aplicação)", fontsize=16, loc='top').at((2,7))
 d += elm.Line().up().length(d.unit*0.5)
 d += elm.SourceV().up().label('Vin', loc='top')
 d += elm.Line().up().length(d.unit*0.5)
@@ -62,7 +59,7 @@ plt.semilogx(w, mag_linear, label='|H(jω)| (linear)')
 plt.axvline(wc1, color='r', linestyle='--', label=f'ωc1 = {wc1:.1f} rad/s')
 plt.axvline(wc2, color='r', linestyle='--', label=f'ωc2 = {wc2:.1f} rad/s')
 plt.axvline(w0, color='g', linestyle='--', label=f'ω0 = {w0:.1f} rad/s')
-plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (3ª Variação) (ω)")
+plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (Aplicação) (ω)")
 plt.ylabel("|H(jω)|")
 plt.grid(True, which="both", ls="--")
 plt.legend()
@@ -88,7 +85,7 @@ plt.semilogx(f, mag_db, label='|H(jω)| [dB]')
 plt.axvline(fc1, color='r', linestyle='--', label=f'fc1 = {fc1:.1f} Hz')
 plt.axvline(fc2, color='r', linestyle='--', label=f'fc2 = {fc2:.1f} Hz')
 plt.axvline(f0, color='g', linestyle='--', label=f'f0 = {f0:.1f} Hz')
-plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (3ª Variação) (Hz)")
+plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (Aplicação) (Hz)")
 plt.ylabel("Magnitude [dB]")
 plt.grid(True, which="both", ls="--")
 plt.legend()

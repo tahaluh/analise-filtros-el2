@@ -2,11 +2,15 @@ import schemdraw
 import schemdraw.elements as elm
 import numpy as np
 import matplotlib.pyplot as plt
+# Notch mais largo (diminui L e aumenta C)
 
-# Valores do filtro
-R_value = 750   # 750 Ω
-L_value = 15e-3 # 15 mH
-C_value = 0.8e-6  # 0.8 µF
+# Valores do filtro — Variação B (f0 ~ 60 Hz, notch mais largo)
+R_value = 1e3        # 1 kΩ
+L_value = 100e-3     # 100 mH
+C_value = 70.36e-6   # 70.36 µF  (LC ≈ 1/(2π·60)^2)
+# Observações:
+# f0 ≈ 60.0 Hz; BW ≈ R/(2πL) ≈ 1592 Hz (bem largo)
+# Valor comercial: C = 68 µF → f0 ≈ 61.0 Hz (quase igual)
 
 # Frequências de corte (rad/s)
 wc1 = -R_value/(2*L_value) + np.sqrt((R_value/(2*L_value))**2 + 1/(L_value*C_value))
@@ -14,15 +18,20 @@ wc2 =  R_value/(2*L_value) + np.sqrt((R_value/(2*L_value))**2 + 1/(L_value*C_val
 
 # Frequência de ressonância
 w0 = 1 / np.sqrt(L_value * C_value)
+f0 = w0 / (2*np.pi)
+fc1 = wc1 / (2*np.pi)
+fc2 = wc2 / (2*np.pi)
+
+print(f"fc1 = {fc1:.2f} Hz, fc2 = {fc2:.2f} Hz, f0 = {f0:.2f} Hz")
 
 # Desenho do circuito RLC série Rejeita-Banda
 d = schemdraw.Drawing()
-d += elm.Label().label("Filtro Rejeita-Banda RLC Série", fontsize=16, loc='top').at((2,7))
+d += elm.Label().label("Filtro Rejeita-Banda RLC Série (2ª Variação)", fontsize=16, loc='top').at((2,7))
 d += elm.Line().up().length(d.unit*0.5)
 d += elm.SourceV().up().label('Vin', loc='top')
 d += elm.Line().up().length(d.unit*0.5)
 d += elm.Dot()
-d += elm.Resistor().right().label(f'R = {R_value:.1f} Ω', loc='top')
+d += elm.Resistor().right().label(f'R = {R_value/1e3:.1f} kΩ', loc='top')
 d += elm.Dot()
 d += elm.Line().right().length(d.unit*0.5)
 d += elm.Dot().label('+', loc='bottom')
@@ -40,35 +49,58 @@ d.draw()
 f = np.logspace(1, 5, 1000)   # Hz
 w = 2 * np.pi * f             # rad/s
 
-# Módulo linear
+# Função de transferência
 mag_linear = np.abs((1 - w**2 * L_value * C_value) / 
                     np.sqrt((1 - w**2 * L_value * C_value)**2 + (w * R_value * C_value)**2))
-
-# Fase em graus
+mag_db = 20*np.log10(mag_linear)
 phase = -np.arctan2(w * R_value * C_value, 1 - w**2 * L_value * C_value) * (180/np.pi)
 
-# Plot dos gráficos
-plt.figure(figsize=(8,6))
+# --- Plot em função da frequência angular (rad/s) ---
+plt.figure(figsize=(9,7))
 
-# Módulo |H(jω)|
 plt.subplot(2,1,1)
-plt.semilogx(w, mag_linear, label='|H(jω)|')
+plt.semilogx(w, mag_linear, label='|H(jω)| (linear)')
 plt.axvline(wc1, color='r', linestyle='--', label=f'ωc1 = {wc1:.1f} rad/s')
 plt.axvline(wc2, color='r', linestyle='--', label=f'ωc2 = {wc2:.1f} rad/s')
 plt.axvline(w0, color='g', linestyle='--', label=f'ω0 = {w0:.1f} rad/s')
-plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série")
+plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (2ª Variação) (ω)")
 plt.ylabel("|H(jω)|")
 plt.grid(True, which="both", ls="--")
 plt.legend()
 
-# Fase ∠H(jω)
 plt.subplot(2,1,2)
 plt.semilogx(w, phase, label='Fase H(jω)')
-plt.axvline(wc1, color='r', linestyle='--', label=f'ωc1 = {wc1:.1f} rad/s')
-plt.axvline(wc2, color='r', linestyle='--', label=f'ωc2 = {wc2:.1f} rad/s')
-plt.axvline(w0, color='g', linestyle='--', label=f'ω0 = {w0:.1f} rad/s')
+plt.axvline(wc1, color='r', linestyle='--')
+plt.axvline(wc2, color='r', linestyle='--')
+plt.axvline(w0, color='g', linestyle='--')
 plt.xlabel("Frequência Angular ω [rad/s]")
-plt.ylabel("∠H(jω)")
+plt.ylabel("∠H(jω) [graus]")
+plt.grid(True, which="both", ls="--")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# --- Plot em função da frequência (Hz) ---
+plt.figure(figsize=(9,7))
+
+plt.subplot(2,1,1)
+plt.semilogx(f, mag_db, label='|H(jω)| [dB]')
+plt.axvline(fc1, color='r', linestyle='--', label=f'fc1 = {fc1:.1f} Hz')
+plt.axvline(fc2, color='r', linestyle='--', label=f'fc2 = {fc2:.1f} Hz')
+plt.axvline(f0, color='g', linestyle='--', label=f'f0 = {f0:.1f} Hz')
+plt.title("Resposta em Frequência - Filtro Rejeita-Banda RLC Série (2ª Variação) (Hz)")
+plt.ylabel("Magnitude [dB]")
+plt.grid(True, which="both", ls="--")
+plt.legend()
+
+plt.subplot(2,1,2)
+plt.semilogx(f, phase, label='Fase H(jω)')
+plt.axvline(fc1, color='r', linestyle='--')
+plt.axvline(fc2, color='r', linestyle='--')
+plt.axvline(f0, color='g', linestyle='--')
+plt.xlabel("Frequência [Hz]")
+plt.ylabel("∠H(jω) [graus]")
 plt.grid(True, which="both", ls="--")
 plt.legend()
 

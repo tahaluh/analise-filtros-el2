@@ -2,13 +2,10 @@ import schemdraw
 import schemdraw.elements as elm
 import numpy as np
 import matplotlib.pyplot as plt
-# aumentar R (mantendo C)
-# diminui (curva desliza para a esquerda), a inclinação de ±20 dB/década não muda.
-# O filtro fica com impedância de entrada maior.
-# Menor corrente ⇒ menos consumo.
+
 
 # Valores do filtro
-R_value = 10e3   # 10 kΩ
+R_value = 1e3   # 1 kΩ
 C_value = 1e-6  # 1 μF
 
 # Frequência de corte
@@ -17,7 +14,7 @@ w_c = 2 * np.pi * f_c                      # rad/s
 
 # Desenho do circuito RC Passa-Alta
 d = schemdraw.Drawing()
-d += elm.Label().label("Filtro Passa-Alta RC (1ª Variação)", fontsize=16, loc='top').at((2,4))
+d += elm.Label().label("Filtro Passa-Alta RC (Aplicação)", fontsize=16, loc='top').at((2,4))
 d += elm.SourceV().up().label('Vin', loc='left')
 d += elm.Dot()
 d += elm.Capacitor().right().label(f'C = {C_value*1e6:.1f}µF', loc='top')
@@ -47,7 +44,7 @@ plt.figure(figsize=(9,7))
 plt.subplot(2,1,1)
 plt.semilogx(w, mag_linear, label='|H(jω)| (linear)')
 plt.axvline(w_c, color='r', linestyle='--', label=f'ωc = {w_c:.1f} rad/s')
-plt.title("Resposta em Frequência - Filtro Passa-Alta RC (1ª Variação) (ω)")
+plt.title("Resposta em Frequência - Filtro Passa-Alta RC (Aplicação) (ω)")
 plt.ylabel("|H(jω)|")
 plt.grid(True, which="both", ls="--")
 plt.legend()
@@ -69,7 +66,7 @@ plt.figure(figsize=(9,7))
 plt.subplot(2,1,1)
 plt.semilogx(f, mag_db, label='|H(jω)| [dB]')
 plt.axvline(f_c, color='r', linestyle='--', label=f'fc = {f_c:.1f} Hz')
-plt.title("Resposta em Frequência - Filtro Passa-Alta RC (1ª Variação) (Hz)")
+plt.title("Resposta em Frequência - Filtro Passa-Alta RC (Aplicação) (Hz)")
 plt.ylabel("Magnitude [dB]")
 plt.grid(True, which="both", ls="--")
 plt.legend()
